@@ -53,7 +53,36 @@ const show = (req, res) => {
   })
 }
 
+
+const storeReview = (req, res) => {
+  const bookId = Number(req.params.id)
+  const { username, vote, content } = req.body
+
+  console.log('Received review:', { bookId, username, vote, content });
+
+  // Validate the input
+  if (!username || !vote || !content) {
+    return res.status(400).json({ error: 'Missing required fields: username, vote, content' });
+  }
+
+
+
+  // Prepare the SQL query to insert the review
+  const sql = 'INSERT INTO reviews (book_id, username, vote, content) VALUES (?, ?, ?, ?)'
+
+  // Execute the SQL query
+  connection.query(sql, [bookId, username, vote, content], (err, results) => {
+    // console.log(results, err);
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Database query failed' });
+    }
+    res.status(201).json({ message: 'Review added successfully', reviewId: results.insertId });
+  });
+}
+
 module.exports = {
   index,
-  show
+  show,
+  storeReview
 }

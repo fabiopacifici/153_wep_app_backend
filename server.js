@@ -10,6 +10,9 @@ const PORT = process.env.PORT || 3000
 // register the static middleware
 app.use(express.static('public'))
 
+// register the json body parser middleware
+app.use(express.json())
+
 // Enable CORS for all routes
 app.use(cors())
 
