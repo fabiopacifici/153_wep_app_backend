@@ -53,7 +53,23 @@ const show = (req, res) => {
   })
 }
 
+// Create
+const create = (req, res) => {
+  const { title, plot, cover_image, author, year } = req.body
+  // prepare the sql query
+  const sql = 'INSERT INTO books (title, plot, cover_image, author, year) VALUES (?, ?, ?, ?, ?)'
+  // execute the sql query
+  connection.query(sql, [title, plot, cover_image, author, year], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Database query failed' });
+    }
+    res.status(201).json({ message: 'Book created successfully', bookId: results.insertId });
+  })
+}
 
+
+// Store review
 const storeReview = (req, res) => {
   const bookId = Number(req.params.id)
   const { username, vote, content } = req.body
@@ -84,5 +100,6 @@ const storeReview = (req, res) => {
 module.exports = {
   index,
   show,
+  create,
   storeReview
 }
