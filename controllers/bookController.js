@@ -55,7 +55,18 @@ const show = (req, res) => {
 
 // Create
 const create = (req, res) => {
-  const { title, plot, cover_image, author, year } = req.body
+
+  console.log('Received book data:', req.body);
+  console.log('Received file:', req.file);
+  
+
+  const { title, plot, author, year } = req.body
+  const cover_image = req.file ?  `http://localhost:3010/img/${req.file.filename}` : `https://placehold.co/600x400?text=${title.replaceAll(' ', '+')}`
+
+  // Validate the input
+  if (!title || !plot || !author || !year) {
+    return res.status(400).json({ error: 'Missing required fields: title, plot, author, year' });
+  }
   // prepare the sql query
   const sql = 'INSERT INTO books (title, plot, cover_image, author, year) VALUES (?, ?, ?, ?, ?)'
   // execute the sql query
